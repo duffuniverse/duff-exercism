@@ -1,3 +1,3 @@
 # duff-exercism
-Some exercism ruby challenges
+Some exercism challenges
 
