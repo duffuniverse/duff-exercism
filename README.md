@@ -1,4 +1,4 @@
 # duff-exercism
 
-Problems from exercism.io solved in Ruby
+Problems from [exercism](http://exercism.io) solved in Ruby
 
