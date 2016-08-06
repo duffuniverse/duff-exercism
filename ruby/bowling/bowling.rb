@@ -1,3 +1,7 @@
+module BookKeeping
+  VERSION = 1
+end
+
 class Game
   FRAMES_IN_GAME = 10
   PINS_COUNT = 10
@@ -5,9 +9,7 @@ class Game
   attr_reader :frames 
 
   def initialize
-    @frames = []
-
-    frames << Frame.new(next_frame_number)
+    @frames = [ Frame.new(1) ]
   end
 
   def roll(pins)
@@ -56,7 +58,7 @@ module Frame
   end
 
   class Default
-    MAX_BALL_THROWS = 2
+    MAX_THROWS = 2
 
     attr_reader :ball_throws
 
@@ -83,7 +85,7 @@ module Frame
     end
 
     def completed?
-      strike? || ball_throws.length == MAX_BALL_THROWS 
+      strike? || ball_throws.length == MAX_THROWS 
     end
 
     def if_open
@@ -117,10 +119,11 @@ module Frame
 
     def pins_knocked_down_in_next_two_throws(next_frame, frame_after_next)
       if next_frame
-        next_frame.if_strike do
-          return next_frame.pins_down_in_two_throws + (frame_after_next ? frame_after_next.ball_throws.first : 0)
+        if next_frame.ball_throws.first == Game::PINS_COUNT
+          next_frame.pins_down_in_two_throws + (frame_after_next ? frame_after_next.ball_throws.first : 0)
+        else
+          next_frame.pins_down_in_two_throws
         end
-        return next_frame.pins_down_in_two_throws
       else
         0
       end
@@ -140,7 +143,7 @@ module Frame
   end
 
   class Last
-    MAX_BALL_THROWS = 3
+    MAX_THROWS = 3
 
     attr_reader :ball_throws
 
@@ -170,33 +173,20 @@ module Frame
       ball_throws[0..1].reduce(0, :+)
     end
 
-    def if_strike
-      yield if strike?
-      self
-    end
-
     private
-
-    def strike?
-      ball_throws.first == Game::PINS_COUNT
-    end
 
     def player_get_fill_ball?
       ball_throws.length == 2 && pins_down_in_two_throws >= Game::PINS_COUNT
     end
 
     def can_throw?(pins)
-      if ball_throws.length == 1 && !strike?
-        return ball_throws.first + pins <= Game::PINS_COUNT
+      if ball_throws.length == 1 && ball_throws.first != Game::PINS_COUNT
+        ball_throws.first + pins <= Game::PINS_COUNT
       elsif ball_throws.length == 2 && ball_throws[1] != Game::PINS_COUNT
-        return ball_throws[1] + pins <= Game::PINS_COUNT
+        ball_throws[1] + pins <= Game::PINS_COUNT
+      else
+        true
       end
-      true
-      # TODO
     end
   end
-end
-
-module BookKeeping
-  VERSION = 1
 end
