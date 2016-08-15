@@ -1,4 +1,5 @@
 class SpaceAge
+  EARTH_ORBITAL_PERIOD_IN_SECONDS = 31_557_600
   PLANETS = %i{ earth mercury venus mars jupiter saturn uranus neptune }
 
   ORBITAL_PERIODS = {
@@ -29,10 +30,8 @@ class SpaceAge
   private 
 
   def age_in_planet_years(planet)
-    earth_orbital_period_in_seconds = 31_557_600
     orbital_period_in_earth_years = ORBITAL_PERIODS[planet]
-
-    (seconds / earth_orbital_period_in_seconds / orbital_period_in_earth_years).round(2)
+    (seconds / EARTH_ORBITAL_PERIOD_IN_SECONDS / orbital_period_in_earth_years).round(2)
   end
 end
 
