@@ -1,6 +1,5 @@
 class SpaceAge
   EARTH_ORBITAL_PERIOD_IN_SECONDS = 31_557_600
-  PLANETS = %i{ earth mercury venus mars jupiter saturn uranus neptune }
 
   ORBITAL_PERIODS = {
     earth: 1.0,
@@ -17,7 +16,7 @@ class SpaceAge
     @seconds = age_in_seconds
   end
 
-  PLANETS.each do |planet|
+  ORBITAL_PERIODS.keys.each do |planet|
     define_method("on_#{planet}") do
       age_in_planet_years(planet) 
     end
