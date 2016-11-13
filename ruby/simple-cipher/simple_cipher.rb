@@ -1,10 +1,10 @@
 class Cipher
   attr_reader :key
 
-  def initialize(key = nil, key_length = 100)
-    key_valid?(key) if key
+  def initialize(key = generate_key)
+    raise ArgumentError.new('Key must contain only lowercase letters') unless key =~ /[a-z]/
 
-    @key = key || random_key(key_length)
+    @key = key
     @key_bytes = to_bytes(@key)
   end
 
@@ -30,14 +30,9 @@ class Cipher
 
   private
 
-  def key_valid?(key)
-    raise ArgumentError.new('Key must not be empty') if key.empty?
-    raise ArgumentError.new('Key must contain only small letters') if key =~ /[A-Z0-9]/
-  end
-
-  def random_key(length)
+  def generate_key
     ''.tap do |k|
-      length.times { k << ('a'..'z').to_a.sample }
+      100.times { k << ('a'..'z').to_a.sample }
     end
   end
 
