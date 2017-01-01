@@ -20,22 +20,33 @@ class WordProblem
 
   private
 
-    def math_expression(sentence)
+    def without_question(text)
+      text[8..-2]
+    end
+
+    def math_expression(text)
       OPERATORS.
         keys.
-        reduce(sentence[8..-2]) { |result, key| result.gsub key, OPERATORS[key] }
+        reduce(without_question(text)) do |result, key| 
+          result.gsub key, OPERATORS[key] 
+        end
     end
 
     def chunks
       expression.split(' ')
     end
 
+    def first_number
+      chunks.first.to_i
+    end
+
+    def all_but_the_first
+      chunks[1..-1]
+    end
+
     def evaluate_expression
-      result = chunks.first.to_i
-
-      chunks[1..-1].
-        each_slice(2) { |operator, argument| result = result.send(operator, argument.to_i) } 
-
-      result
+      all_but_the_first.
+        each_slice(2).
+        reduce(first_number) { |result, (op, arg)| result.send(op, arg.to_i) }
     end
 end
